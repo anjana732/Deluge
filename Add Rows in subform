@@ -1,0 +1,25 @@
+itr = input.No_of_Shareholders;
+if(itr != null)
+{
+	existingRows = 0;
+	for each  subRow in input.SubForm
+	{
+		existingRows = existingRows + 1;
+	}
+	i = existingRows + 1;
+	itrstring = "".leftpad(itr).replaceAll(" ",",").toList().subList(0,itr);
+	for each  ele in itrstring
+	{
+		if(input.itr != null)
+		{
+			data = Onboarding_General_Shareholder_Details.SubForm();
+			data.Serial_No=i;
+			input.SubForm.insert(data);
+			i = i + 1;
+		}
+	}
+}
+// else
+// {
+// 	clear SubForm;
+// }
