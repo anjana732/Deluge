@@ -1,0 +1,103 @@
+<%{
+	resp = Onboarding_General_Shareholder_Details[ID == input.CRMID];
+	subdata = resp.Shareholder_Details;
+	html_content = "";
+	for each  ele in subdata
+	{
+		shareholdername = ele.Shareholder.Name;
+		cat = ele.Category;
+		checkbox = ele.Completed;
+		ids = ele.Shareholder;
+		style = "";
+		if(checkbox == TRUE)
+		{
+			check = "Checked";
+			style = "style='pointer-events: none'";
+			style1 = "style='background-color: #4aa84c'";
+			whiteStyle = "color: white";
+		}
+		else
+		{
+			check = "Unchecked";
+			style1 = "style='background-color: #8b1a08'";
+			whiteStyle = "color: white;font-weight: 700;";
+		}
+		if(cat == "Individual")
+		{
+			resp1 = Onboarding_Individual_Shareholder_Details[General_Shareholder_Details_ID == resp.ID && Shareholder == ids];
+			if(resp1.count() > 0)
+			{
+				url = "<a href='https://creatorapp.zohopublic.com/creativezone/mea-poc/form-embed/Onboarding_Individual_Shareholder_Details/XPYnw0C4kmx46Q8BTxP2eNOD0ORe8WryRBruZMd5RtyV2bq0Jp5KO6MvDnB2wVjzaaJzjz9x4qejjqJaeDtytE7VmeVvGzZ2uDwf?General_Shareholder_Details_ID=" + resp.ID + "&Shareholder=" + ids + "' target='iframe_a' onclick=\"document.getElementById('iframe_a').style.display='block'\" style='" + whiteStyle + "'>Edit & Upload</a>";
+			}
+			else
+			{
+				url = "<a href='https://creatorapp.zohopublic.com/creativezone/mea-poc/form-embed/Onboarding_Individual_Shareholder_Details/XPYnw0C4kmx46Q8BTxP2eNOD0ORe8WryRBruZMd5RtyV2bq0Jp5KO6MvDnB2wVjzaaJzjz9x4qejjqJaeDtytE7VmeVvGzZ2uDwf?General_Shareholder_Details_ID=" + resp.ID + "&Shareholder=" + ids + "' target='iframe_a' onclick=\"document.getElementById('iframe_a').style.display='block'\" style='" + whiteStyle + "'>Edit & Upload</a>";
+			}
+		}
+		else if(cat == "Corporate")
+		{
+			onboardingCorporateReport = Onboarding_Corporate_Shareholder_Details[Onboarding_General_Shareholder_Details == resp.ID && Shareholder == ids];
+			if(onboardingCorporateReport.count() > 0)
+			{
+				url = "<a href='https://creatorapp.zohopublic.com/creativezone/mea-poc/form-embed/Onboarding_Corporate_Shareholder_Details/9K8ejBwTB77DPYsEftJTePTMbMpwa1sQ1M86e20CYRumQzeu2h98aDECwGCs1qROS9prHTzDbkRkPD8yGQmaqqs7nA7xkUww6zgZ?Onboarding_General_Shareholder_Details=" + resp.ID + "&Shareholder=" + ids + "' target='iframe_a' onclick=\"document.getElementById('iframe_a').style.display='block'\" style='" + whiteStyle + "'>Edit & Upload</a>";
+			}
+			else
+			{
+				url = "<a href='https://creatorapp.zohopublic.com/creativezone/mea-poc/form-embed/Onboarding_Corporate_Shareholder_Details/9K8ejBwTB77DPYsEftJTePTMbMpwa1sQ1M86e20CYRumQzeu2h98aDECwGCs1qROS9prHTzDbkRkPD8yGQmaqqs7nA7xkUww6zgZ?Onboarding_General_Shareholder_Details=" + resp.ID + "&Shareholder=" + ids + "' target='iframe_a' onclick=\"document.getElementById('iframe_a').style.display='block'\" style='" + whiteStyle + "'>Edit & Upload</a>";
+			}
+		}
+		html_content = html_content + "<tr " + style1 + ">";
+		html_content = (html_content + "<td>" + shareholdername) + "</td>";
+		html_content = html_content + "<td>" + cat + "</td>";
+		html_content = html_content + "<td>" + url + "</td>";
+		html_content = html_content + "<td><input type='checkbox' " + check + "></td>";
+		html_content = html_content + "</tr>";
+	}
+	%>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Shareholder Table</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+	/* Initially hide the iframe */
+	iframe {
+	  display: none;
+	}
+  </style>
+</head>
+<body>
+  <table>
+    <thead>
+      <tr>
+        <th>Shareholder Name</th>
+        <th>Category</th>
+        <th>Action</th>
+		<th>Completed</th>
+      </tr>
+    </thead>
+    <tbody>
+        <%=html_content%>
+    </tbody>
+  </table>
+
+  <!-- Initially hidden iframe that becomes visible when a link is clicked -->
+  <iframe id="iframe_a" name="iframe_a" height="750px" width="100%" title="Iframe Example"></iframe>
+
+</body>
+</html>
+<%
+
+}%>
+
