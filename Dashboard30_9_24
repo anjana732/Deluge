@@ -1,0 +1,147 @@
+<%{
+	resp = Onboarding_General_Shareholder_Details[ID == input.CRMID];
+	subdata = resp.Shareholder_Details;
+	regid = resp.Registration_ID;
+	html_content = "";
+	total_count = subdata.count();
+	// Total number of elements
+	completed_count = 0;
+	// Counter for elements with checkbox == TRUE
+	// Iterate to count completed elements
+	for each  ele in subdata
+	{
+		if(ele.Completed == TRUE)
+		{
+			completed_count = completed_count + 1;
+		}
+	}
+	// Add progress text
+	progress_text = "Progress: " + completed_count + " out of " + total_count;
+	// Iterate through elements to generate HTML content
+	for each  ele in subdata
+	{
+		shareholdername = ele.Shareholder.Name;
+		cat = ele.Category;
+		checkbox = ele.Completed;
+		ids = ele.Shareholder;
+		style = "";
+		if(checkbox == TRUE)
+		{
+			check = "Checked";
+			style = "style='pointer-events: none'";
+			style1 = "style='background-color: #4aa84c'";
+			whiteStyle = "color: white";
+		}
+		else
+		{
+			check = "Unchecked";
+			style1 = "style='background-color: #ecf6ec'";
+			whiteStyle = "color: #8b1a08;font-weight: 700;";
+		}
+		if(cat == "Individual")
+		{
+			resp1 = Onboarding_Individual_Shareholder_Details[General_Shareholder_Details_ID == resp.ID && Shareholder == ids];
+			if(resp1.count() > 0)
+			{
+				url = "<a href='https://creatorapp.zohopublic.com/creativezone/mea-poc/form-embed/Onboarding_Individual_Shareholder_Details/XPYnw0C4kmx46Q8BTxP2eNOD0ORe8WryRBruZMd5RtyV2bq0Jp5KO6MvDnB2wVjzaaJzjz9x4qejjqJaeDtytE7VmeVvGzZ2uDwf?General_Shareholder_Details_ID=" + resp.ID + "&Shareholder=" + ids + "' target='iframe_a' onclick=\"document.getElementById('iframe_a').style.display='block'\" style='" + whiteStyle + "'>Edit & Upload</a>";
+			}
+			else
+			{
+				url = "<a href='https://creatorapp.zohopublic.com/creativezone/mea-poc/form-embed/Onboarding_Individual_Shareholder_Details/XPYnw0C4kmx46Q8BTxP2eNOD0ORe8WryRBruZMd5RtyV2bq0Jp5KO6MvDnB2wVjzaaJzjz9x4qejjqJaeDtytE7VmeVvGzZ2uDwf?General_Shareholder_Details_ID=" + resp.ID + "&Shareholder=" + ids + "' target='iframe_a' onclick=\"document.getElementById('iframe_a').style.display='block'\" style='" + whiteStyle + "'>Edit & Upload</a>";
+			}
+		}
+		else if(cat == "Corporate")
+		{
+			onboardingCorporateReport = Onboarding_Corporate_Shareholder_Details[Onboarding_General_Shareholder_Details == resp.ID && Shareholder == ids];
+			if(onboardingCorporateReport.count() > 0)
+			{
+				url = "<a href='https://creatorapp.zohopublic.com/creativezone/mea-poc/form-embed/Onboarding_Corporate_Shareholder_Details/9K8ejBwTB77DPYsEftJTePTMbMpwa1sQ1M86e20CYRumQzeu2h98aDECwGCs1qROS9prHTzDbkRkPD8yGQmaqqs7nA7xkUww6zgZ?Onboarding_General_Shareholder_Details=" + resp.ID + "&Shareholder=" + ids + "' target='iframe_a' onclick=\"document.getElementById('iframe_a').style.display='block'\" style='" + whiteStyle + "'>Edit & Upload</a>";
+			}
+			else
+			{
+				url = "<a href='https://creatorapp.zohopublic.com/creativezone/mea-poc/form-embed/Onboarding_Corporate_Shareholder_Details/9K8ejBwTB77DPYsEftJTePTMbMpwa1sQ1M86e20CYRumQzeu2h98aDECwGCs1qROS9prHTzDbkRkPD8yGQmaqqs7nA7xkUww6zgZ?Onboarding_General_Shareholder_Details=" + resp.ID + "&Shareholder=" + ids + "' target='iframe_a' onclick=\"document.getElementById('iframe_a').style.display='block'\" style='" + whiteStyle + "'>Edit & Upload</a>";
+			}
+		}
+		html_content = html_content + "<tr " + style1 + ">";
+		html_content = (html_content + "<td>" + shareholdername) + "</td>";
+		html_content = html_content + "<td>" + cat + "</td>";
+		html_content = html_content + "<td>" + url + "</td>";
+		html_content = html_content + "<td><input type='checkbox' " + check + "></td>";
+		html_content = html_content + "</tr>";
+	}
+	// Check if all records are completed
+	if(completed_count == total_count)
+	{
+		message = "All shareholder details are collected. Please click the button below to proceed to the next step.";
+		button = "<a href='https://creatorapp.zoho.com/creativezone/mea-poc/#Form:Onboarding_Compliance_Requirements?Registration_ID=" + regid + "' style='margin-top: 20px; padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; text-decoration: none;'>Proceed to Next Step</a>";
+	}
+	else
+	{
+		message = "";
+		button = "";
+	}
+	%>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Shareholder Table</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+    /* Initially hide the iframe */
+    iframe {
+      display: none;
+    }
+    /* Style for progress text */
+    .progress-text {
+      text-align: right;
+      color: red;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <table>
+    <thead>
+      <tr>
+        <th>Shareholder Name</th>
+        <th>Category</th>
+        <th>Action</th>
+        <th>Completed</th>
+      </tr>
+    </thead>
+    <tbody>
+        <%=html_content%>
+    </tbody>
+  </table>
+
+  <!-- Display progress text at the bottom right of the table -->
+  <div class="progress-text"><%=progress_text%></div>
+  
+  <!-- Message and button for proceeding to the next step if all are completed -->
+  <div style="text-align: center; margin-top: 20px;">
+      <%=message%>
+      <br>
+	  <br>
+      <%=button%>
+  </div>
+
+  <!-- Initially hidden iframe that becomes visible when a link is clicked -->
+  <iframe id="iframe_a" name="iframe_a" height="750px" width="100%" title="Iframe Example"></iframe>
+
+</body>
+</html>
+<%
+
+}%>
